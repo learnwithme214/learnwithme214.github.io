@@ -4,52 +4,63 @@
     <title>Previous Year Papers</title>
 
     <style>
-        /* Full screen fix */
-        html, body {
-            height: 100%;
+        /* Reset */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
-        /* Background image */
+        html, body {
+            height: 100%;
+        }
+
+        /* Background */
         body {
             background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
         }
 
-        /* Overlay */
+        /* Fullscreen overlay */
         .overlay {
-            min-height: 100vh;
+            height: 100vh;
             width: 100%;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
 
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
 
+        /* Title */
         h1 {
             color: white;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        /* Card container */
+        /* Card */
         .container {
-            margin-top: 30px;
             width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 20px;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
             text-align: center;
+
+            animation: fadeIn 0.6s ease;
         }
 
+        /* Inputs */
         select, button {
             padding: 10px;
             margin: 10px;
             font-size: 16px;
             border-radius: 6px;
             border: 1px solid #ccc;
+            width: 80%;
         }
 
         button {
@@ -63,8 +74,10 @@
             background: #0056b3;
         }
 
+        /* Results */
         .papers {
             margin-top: 20px;
+            min-height: 120px;
         }
 
         .papers a {
@@ -81,6 +94,18 @@
         .papers a:hover {
             background: #007BFF;
             color: white;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -107,8 +132,6 @@
             <option value="2023">2023</option>
             <option value="2022">2022</option>
         </select>
-
-        <br>
 
         <button onclick="filterPapers()">Search</button>
 
@@ -140,7 +163,7 @@ function filterPapers() {
     );
 
     if (filtered.length === 0) {
-        results.innerHTML = "<p>No papers found</p>";
+        results.innerHTML = "<p style='color:red; font-weight:bold;'>No papers found</p>";
         return;
     }
 
@@ -152,6 +175,9 @@ function filterPapers() {
         results.appendChild(link);
     });
 }
+
+/* Show all papers on first load */
+window.onload = filterPapers;
 </script>
 
 </body>
