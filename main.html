@@ -2,105 +2,126 @@
 <html>
 <head>
     <title>Previous Year Papers</title>
+
     <style>
         body {
-            font-family: Arial;
-            text-align: center;
-            background: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            
+            /* Background Image */
+            background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
+            
+            color: #333;
+        }
+
+        /* Overlay for readability */
+        .overlay {
+            background: rgba(0, 0, 0, 0.6);
+            min-height: 100vh;
+            padding: 20px;
         }
 
         h1 {
-            background: #333;
+            text-align: center;
             color: white;
-            padding: 15px;
+            margin-bottom: 30px;
         }
 
-        img {
-            width: 80%;
-            max-width: 500px;
-            margin: 20px 0;
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
         select, button {
             padding: 10px;
             margin: 10px;
             font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
         }
 
         .papers {
             margin-top: 20px;
         }
 
-        a {
+        .papers a {
             display: block;
-            margin: 5px;
+            margin: 8px;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
             text-decoration: none;
-            color: blue;
+            color: #333;
+            transition: 0.3s;
+        }
+
+        .papers a:hover {
+            background: #007BFF;
+            color: white;
+        }
+
+        .banner {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 
 <body>
 
+<div class="overlay">
+
     <h1>📚 Previous Year Question Papers</h1>
 
-    <!-- Image -->
-    <img src="https://via.placeholder.com/500x200" alt="Banner">
+    <div class="container">
 
-    <!-- Filters -->
-    <div>
-        <select id="department">
-            <option value="">Select Department</option>
-            <option value="science">Science</option>
-            <option value="arts">Arts</option>
-        </select>
+        <!-- Banner -->
+        <img class="banner" src="https://via.placeholder.com/500x200" alt="Banner">
 
-        <select id="year">
-            <option value="">Select Year</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-        </select>
+        <!-- Filters -->
+        <div>
+            <select id="department">
+                <option value="">Select Department</option>
+                <option value="science">Science</option>
+                <option value="arts">Arts</option>
+            </select>
 
-        <button onclick="filterPapers()">Search</button>
+            <select id="year">
+                <option value="">Select Year</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+            </select>
+
+            <br>
+
+            <button onclick="filterPapers()">Search</button>
+        </div>
+
+        <!-- Results -->
+        <div class="papers" id="results"></div>
+
     </div>
 
-    <!-- Results -->
-    <div class="papers" id="results"></div>
+</div>
 
-    <script>
-        const papers = [
-            { dept: "science", year: "2023", name: "Science Paper 2023", link: "#" },
-            { dept: "science", year: "2022", name: "Science Paper 2022", link: "#" },
-            { dept: "arts", year: "2023", name: "Arts Paper 2023", link: "#" },
-            { dept: "arts", year: "2022", name: "Arts Paper 2022", link: "#" }
-        ];
-
-        function filterPapers() {
-            const dept = document.getElementById("department").value;
-            const year = document.getElementById("year").value;
-            const results = document.getElementById("results");
-
-            results.innerHTML = "";
-
-            const filtered = papers.filter(p =>
-                (dept === "" || p.dept === dept) &&
-                (year === "" || p.year === year)
-            );
-
-            if (filtered.length === 0) {
-                results.innerHTML = "<p>No papers found</p>";
-                return;
-            }
-
-            filtered.forEach(p => {
-                const link = document.createElement("a");
-                link.href = p.link;
-                link.textContent = p.name;
-                link.target = "_blank";
-                results.appendChild(link);
-            });
-        }
-    </script>
-
-</body>
-</html>
+<script>
+    const papers = [
+        { dept: "science", year: "2023", name: "Science Paper 2023", link: "#" },
+        { dept: "science", year: "2022", name: "Science Paper 2022", link
