@@ -101,62 +101,70 @@
             <option value="">Select Department</option>
 
             <optgroup label="Arts Faculty">
-                <option>English</option>
-                <option>History</option>
-                <option>Political Science</option>
-                <option>Anthropology</option>
+                <option value="English">English</option>
+                <option value="History">History</option>
+                <option value="Political Science">Political Science</option>
+                <option value="Anthropology">Anthropology</option>
             </optgroup>
 
             <optgroup label="Science Faculty">
-                <option>Physics</option>
-                <option>Mathematics</option>
-                <option>Chemistry</option>
+                <option value="Physics">Physics</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Chemistry">Chemistry</option>
             </optgroup>
 
             <optgroup label="Commerce & Management">
-                <option>Commerce</option>
-                <option>MBA</option>
+                <option value="Commerce">Commerce</option>
+                <option value="MBA">MBA</option>
             </optgroup>
 
-            <!-- NEW -->
+            <!-- IMPORTANT -->
             <optgroup label="Engineering">
-                <option value="Bachelor of Technology (B.Tech)">Bachelor of Technology (B.Tech)</option>
+                <option value="BTech">Bachelor of Technology (B.Tech)</option>
             </optgroup>
         </select>
 
-        <!-- Semester (hidden initially) -->
+        <!-- Semester (hidden by default) -->
         <select id="semester" style="display:none;">
             <option value="">Select Semester</option>
-            <option>Sem 1</option>
-            <option>Sem 2</option>
-            <option>Sem 3</option>
-            <option>Sem 4</option>
-            <option>Sem 5</option>
-            <option>Sem 6</option>
-            <option>Sem 7</option>
-            <option>Sem 8</option>
+            <option value="Sem 1">Sem 1</option>
+            <option value="Sem 2">Sem 2</option>
+            <option value="Sem 3">Sem 3</option>
+            <option value="Sem 4">Sem 4</option>
+            <option value="Sem 5">Sem 5</option>
+            <option value="Sem 6">Sem 6</option>
+            <option value="Sem 7">Sem 7</option>
+            <option value="Sem 8">Sem 8</option>
         </select>
 
         <!-- Year -->
         <select id="year">
             <option value="">Select Year</option>
-            <option>2026</option>
-            <option>2025</option>
-            <option>2024</option>
-            <option>2023</option>
-            <option>2022</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
         </select>
 
         <button onclick="filterPapers()">Search</button>
 
+        <!-- Results -->
         <div class="papers" id="results"></div>
 
     </div>
 
 </div>
 
+<script>
+const papers = [
+    { dept: "BTech", sem: "Sem 1", year: "2025", name: "BTech Sem1 2025 Paper", link: "#" },
+    { dept: "BTech", sem: "Sem 2", year: "2024", name: "BTech Sem2 2024 Paper", link: "#" },
+    { dept: "Mathematics", year: "2023", name: "Mathematics 2023 Paper", link: "#" },
+    { dept: "English", year: "2022", name: "English 2022 Paper", link: "#" }
+];
 
-// Show/hide semester
+// Show / hide semester dropdown
 function handleDeptChange() {
     const dept = document.getElementById("department").value;
     const sem = document.getElementById("semester");
@@ -184,7 +192,7 @@ function filterPapers() {
     );
 
     if (filtered.length === 0) {
-        results.innerHTML = "<p style='color:red;'>No papers found</p>";
+        results.innerHTML = "<p style='color:red; font-weight:bold;'>No papers found</p>";
         return;
     }
 
@@ -197,6 +205,7 @@ function filterPapers() {
     });
 }
 
+/* Load on start */
 window.onload = filterPapers;
 </script>
 
