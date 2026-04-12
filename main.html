@@ -44,8 +44,6 @@
             border-radius: 12px;
             box-shadow: 0 0 25px rgba(0,0,0,0.4);
             text-align: center;
-
-            animation: fadeIn 0.6s ease;
         }
 
         select, button {
@@ -81,23 +79,11 @@
             border-radius: 6px;
             text-decoration: none;
             color: #333;
-            transition: 0.3s;
         }
 
         .papers a:hover {
             background: #007BFF;
             color: white;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
     </style>
 </head>
@@ -111,56 +97,44 @@
     <div class="container">
 
         <!-- Department -->
-        <select id="department">
+        <select id="department" onchange="handleDeptChange()">
             <option value="">Select Department</option>
 
             <optgroup label="Arts Faculty">
-                <option>Assamese</option>
                 <option>English</option>
-                <option>Bodo</option>
-                <option>Bengali</option>
-                <option>Hindi</option>
-                <option>Sanskrit</option>
-                <option>Arabic</option>
-                <option>Persian</option>
-
-                <option>Political Science</option>
                 <option>History</option>
-                <option>Economics</option>
-                <option>Sociology</option>
-                <option>Education</option>
-                <option>Philosophy</option>
-                <option>Psychology</option>
-
+                <option>Political Science</option>
                 <option>Anthropology</option>
-                <option>Geography</option>
-                <option>Journalism</option>
-                <option>Library Science</option>
-                <option>Performing Arts</option>
             </optgroup>
 
             <optgroup label="Science Faculty">
                 <option>Physics</option>
-                <option>Chemistry</option>
                 <option>Mathematics</option>
-                <option>Statistics</option>
-
-                <option>Botany</option>
-                <option>Zoology</option>
-                <option>Biotechnology</option>
-                <option>Microbiology</option>
-
-                <option>Geology</option>
-                <option>Environmental Science</option>
-                <option>Computer Science</option>
-                <option>Electronics</option>
+                <option>Chemistry</option>
             </optgroup>
 
             <optgroup label="Commerce & Management">
                 <option>Commerce</option>
-                <option>Business</option>
                 <option>MBA</option>
             </optgroup>
+
+            <!-- NEW -->
+            <optgroup label="Engineering">
+                <option value="BTech">Bachelor of Technology (B.Tech)</option>
+            </optgroup>
+        </select>
+
+        <!-- Semester (hidden initially) -->
+        <select id="semester" style="display:none;">
+            <option value="">Select Semester</option>
+            <option>Sem 1</option>
+            <option>Sem 2</option>
+            <option>Sem 3</option>
+            <option>Sem 4</option>
+            <option>Sem 5</option>
+            <option>Sem 6</option>
+            <option>Sem 7</option>
+            <option>Sem 8</option>
         </select>
 
         <!-- Year -->
@@ -171,12 +145,10 @@
             <option>2024</option>
             <option>2023</option>
             <option>2022</option>
-            <option>2021</option>
         </select>
 
         <button onclick="filterPapers()">Search</button>
 
-        <!-- Results -->
         <div class="papers" id="results"></div>
 
     </div>
@@ -184,20 +156,35 @@
 </div>
 
 
+// Show/hide semester
+function handleDeptChange() {
+    const dept = document.getElementById("department").value;
+    const sem = document.getElementById("semester");
+
+    if (dept === "BTech") {
+        sem.style.display = "block";
+    } else {
+        sem.style.display = "none";
+        sem.value = "";
+    }
+}
+
 function filterPapers() {
     const dept = document.getElementById("department").value;
     const year = document.getElementById("year").value;
+    const sem = document.getElementById("semester").value;
     const results = document.getElementById("results");
 
     results.innerHTML = "";
 
     const filtered = papers.filter(p =>
         (dept === "" || p.dept === dept) &&
-        (year === "" || p.year === year)
+        (year === "" || p.year === year) &&
+        (dept !== "BTech" || sem === "" || p.sem === sem)
     );
 
     if (filtered.length === 0) {
-        results.innerHTML = "<p style='color:red; font-weight:bold;'>No papers found</p>";
+        results.innerHTML = "<p style='color:red;'>No papers found</p>";
         return;
     }
 
@@ -210,7 +197,6 @@ function filterPapers() {
     });
 }
 
-/* Load all papers initially */
 window.onload = filterPapers;
 </script>
 
