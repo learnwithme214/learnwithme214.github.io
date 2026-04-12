@@ -47,27 +47,26 @@
         }
 
         select, button {
-    padding: 10px;
-    margin: 10px 0;   /* vertical spacing only */
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-        button {
-    background-color: #007BFF;  /* blue */
-    color: white;               /* text color */
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-}
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
 
-button:hover {
-    background-color: #0056b3;  /* darker blue on hover */
-}
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
 
         .papers {
             margin-top: 20px;
@@ -104,51 +103,51 @@ button:hover {
             <option value="">Select Department</option>
 
             <optgroup label="Arts Faculty">
-                <option value="English">English</option>
-                <option value="History">History</option>
-                <option value="Political Science">Political Science</option>
-                <option value="Anthropology">Anthropology</option>
+                <option value="english">English</option>
+                <option value="history">History</option>
+                <option value="politicalscience">Political Science</option>
+                <option value="anthropology">Anthropology</option>
             </optgroup>
 
             <optgroup label="Science Faculty">
-                <option value="Physics">Physics</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Chemistry">Chemistry</option>
+                <option value="physics">Physics</option>
+                <option value="mathematics">Mathematics</option>
+                <option value="chemistry">Chemistry</option>
             </optgroup>
 
             <optgroup label="Commerce & Management">
-                <option value="Commerce">Commerce</option>
-                <option value="MBA">MBA</option>
+                <option value="commerce">Commerce</option>
+                <option value="mba">MBA</option>
             </optgroup>
 
-            <!-- IMPORTANT -->
             <optgroup label="Engineering">
-                <option value="BTech">Bachelor of Technology (B.Tech)</option>
+                <option value="btech">BTech</option>
             </optgroup>
         </select>
 
-        <!-- Semester (hidden by default) -->
+        <!-- Semester -->
         <select id="semester" style="display:none;">
             <option value="">Select Semester</option>
-            <option value="Sem 1">Sem 1</option>
-            <option value="Sem 2">Sem 2</option>
-            <option value="Sem 3">Sem 3</option>
-            <option value="Sem 4">Sem 4</option>
-            <option value="Sem 5">Sem 5</option>
-            <option value="Sem 6">Sem 6</option>
-            <option value="Sem 7">Sem 7</option>
-            <option value="Sem 8">Sem 8</option>
+            <option value="sem1">Sem 1</option>
+            <option value="sem2">Sem 2</option>
+            <option value="sem3">Sem 3</option>
+            <option value="sem4">Sem 4</option>
+            <option value="sem5">Sem 5</option>
+            <option value="sem6">Sem 6</option>
+            <option value="sem7">Sem 7</option>
+            <option value="sem8">Sem 8</option>
         </select>
 
+        <!-- Year -->
         <select id="year">
-            <option value="">Select year</option>
+            <option value="">Select Year</option>
             <option value="2026">2026</option>
             <option value="2025">2025</option>
             <option value="2024">2024</option>
             <option value="2023">2023</option>
         </select>
 
-
+        <!-- Search Button -->
         <button onclick="filterPapers()">Search</button>
 
         <!-- Results -->
@@ -159,19 +158,13 @@ button:hover {
 </div>
 
 <script>
-const papers = [
-    { dept: "BTech", sem: "Sem 1", year: "2025", name: "BTech Sem1 2025 Paper", link: "#" },
-    { dept: "BTech", sem: "Sem 2", year: "2024", name: "BTech Sem2 2024 Paper", link: "#" },
-    { dept: "Mathematics", year: "2023", name: "Mathematics 2023 Paper", link: "#" },
-    { dept: "English", year: "2022", name: "English 2022 Paper", link: "#" }
-];
 
-// Show / hide semester dropdown
+// Show / hide semester
 function handleDeptChange() {
     const dept = document.getElementById("department").value;
     const sem = document.getElementById("semester");
 
-    if (dept === "BTech") {
+    if (dept === "btech") {
         sem.style.display = "block";
     } else {
         sem.style.display = "none";
@@ -179,36 +172,53 @@ function handleDeptChange() {
     }
 }
 
+// Main logic
 function filterPapers() {
     const dept = document.getElementById("department").value;
     const year = document.getElementById("year").value;
     const sem = document.getElementById("semester").value;
-    const results = document.getElementById("results");
 
+    const results = document.getElementById("results");
     results.innerHTML = "";
 
-    const filtered = papers.filter(p =>
-        (dept === "" || p.dept === dept) &&
-        (year === "" || p.year === year) &&
-        (dept !== "BTech" || sem === "" || p.sem === sem)
-    );
-
-    if (filtered.length === 0) {
-        results.innerHTML = "<p style='color:red; font-weight:bold;'>No papers found</p>";
+    if (!dept || !year) {
+        results.innerHTML = "<p>Select department and year</p>";
         return;
     }
 
-    filtered.forEach(p => {
-        const link = document.createElement("a");
-        link.href = p.link;
-        link.textContent = p.name;
-        link.target = "_blank";
-        results.appendChild(link);
-    });
+    let fileName = "";
+
+    if (dept === "btech") {
+        if (!sem) {
+            results.innerHTML = "<p>Select semester</p>";
+            return;
+        }
+        fileName = `${dept}_${sem}_${year}.pdf`;
+    } else {
+        fileName = `${dept}_${year}.pdf`;
+    }
+
+    const base = "https://your-username.github.io/your-repo/papers/";
+    const fullPath = base + fileName;
+
+    // Check if file exists
+    fetch(fullPath)
+        .then(res => {
+            if (res.ok) {
+                const link = document.createElement("a");
+                link.href = fullPath;
+                link.textContent = "📄 Open Paper";
+                link.target = "_blank";
+                results.appendChild(link);
+            } else {
+                results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
+            }
+        })
+        .catch(() => {
+            results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
+        });
 }
 
-/* Load on start */
-window.onload = filterPapers;
 </script>
 
 </body>
