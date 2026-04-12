@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Previous Year Papers</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            background: #333;
+            color: white;
+            padding: 15px;
+        }
+
+        img {
+            width: 80%;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        .papers {
+            margin-top: 20px;
+        }
+
+        a {
+            display: block;
+            margin: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📚 Previous Year Question Papers</h1>
+
+    <!-- Image -->
+    <img src="https://via.placeholder.com/500x200" alt="Banner">
+
+    <!-- Filters -->
+    <div>
+        <select id="department">
+            <option value="">Select Department</option>
+            <option value="science">Science</option>
+            <option value="arts">Arts</option>
+        </select>
+
+        <select id="year">
+            <option value="">Select Year</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+        </select>
+
+        <button onclick="filterPapers()">Search</button>
+    </div>
+
+    <!-- Results -->
+    <div class="papers" id="results"></div>
+
+    <script>
+        const papers = [
+            { dept: "science", year: "2023", name: "Science Paper 2023", link: "#" },
+            { dept: "science", year: "2022", name: "Science Paper 2022", link: "#" },
+            { dept: "arts", year: "2023", name: "Arts Paper 2023", link: "#" },
+            { dept: "arts", year: "2022", name: "Arts Paper 2022", link: "#" }
+        ];
+
+        function filterPapers() {
+            const dept = document.getElementById("department").value;
+            const year = document.getElementById("year").value;
+            const results = document.getElementById("results");
+
+            results.innerHTML = "";
+
+            const filtered = papers.filter(p =>
+                (dept === "" || p.dept === dept) &&
+                (year === "" || p.year === year)
+            );
+
+            if (filtered.length === 0) {
+                results.innerHTML = "<p>No papers found</p>";
+                return;
+            }
+
+            filtered.forEach(p => {
+                const link = document.createElement("a");
+                link.href = p.link;
+                link.textContent = p.name;
+                link.target = "_blank";
+                results.appendChild(link);
+            });
+        }
+    </script>
+
+</body>
+</html>
