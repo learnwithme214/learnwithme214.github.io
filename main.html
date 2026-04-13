@@ -1,246 +1,70 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Previous Year Papers</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
-        }
-
-        .overlay {
-            height: 100vh;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        h1 {
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.4);
-            text-align: center;
-        }
-
-        select, button {
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            width: 100%;
-        }
-
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .papers {
-            margin-top: 20px;
-            min-height: 120px;
-        }
-
-        .papers a {
-            display: block;
-            margin: 8px;
-            padding: 10px;
-            background: #f1f1f1;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .papers a:hover {
-            background: #007BFF;
-            color: white;
-        }
-
-        .download {
-            display: block;
-            margin-top: 5px;
-            font-size: 14px;
-            color: green;
-            text-decoration: none;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="overlay">
-
-    <h1>📚 Previous Year Question Papers</h1>
-
-    <div class="container">
-
-        <!-- Department -->
-        <select id="department" onchange="handleDeptChange()">
-            <option value="">Select Department</option>
-
-            <optgroup label="Arts Faculty">
-                <option value="history">History</option>
-            </optgroup>
-
-            <optgroup label="Science Faculty">
-                <option value="physics">Physics</option>
-            </optgroup>
-
-            <optgroup label="Commerce & Management">
-                <option value="mba">MBA</option>
-            </optgroup>
-
-            <optgroup label="Engineering">
-                <option value="btech">BTech</option>
-            </optgroup>
-        </select>
-
-        <!-- Semester -->
-        <select id="semester" style="display:none;">
-            <option value="">Select Semester</option>
-            <option value="sem1">Sem 1</option>
-            <option value="sem2">Sem 2</option>
-            <option value="sem3">Sem 3</option>
-            <option value="sem4">Sem 4</option>
-            <option value="sem5">Sem 5</option>
-            <option value="sem6">Sem 6</option>
-            <option value="sem7">Sem 7</option>
-            <option value="sem8">Sem 8</option>
-        </select>
-
-        <!-- Year -->
-        <select id="year">
-            <option value="">Select Year</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-        </select>
-
-        <!-- Search Button -->
-        <button onclick="filterPapers()">Search</button>
-
-        <!-- Results -->
-        <div class="papers" id="results"></div>
-
-    </div>
-
-</div>
-
-<script>
-
-// Show / hide semester
-function handleDeptChange() {
-    const dept = document.getElementById("department").value;
-    const sem = document.getElementById("semester");
-
-    if (dept === "btech") {
-        sem.style.display = "block";
-    } else {
-        sem.style.display = "none";
-        sem.value = "";
-    }
-}
-
-// Main logic
-async function filterPapers() {
+function filterPapers() {
     const dept = document.getElementById("department").value;
     const year = document.getElementById("year").value;
     const sem = document.getElementById("semester").value;
-
     const results = document.getElementById("results");
-    results.innerHTML = "Loading...";
+
+    results.innerHTML = "";
 
     if (!dept || !year) {
         results.innerHTML = "<p>Select department and year</p>";
         return;
     }
 
-    try {
-        // 🔗 GitHub API URL
-        const api = "https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/contents/papers";
+    const base = "https://your-username.github.io/your-repo/papers/";
 
-        const res = await fetch(api);
-        const data = await res.json();
+    let baseName = "";
 
-        let matches = [];
+    if (dept === "btech") {
+        if (!sem) {
+            results.innerHTML = "<p>Select semester</p>";
+            return;
+        }
+        baseName = `${dept}_${sem}_${year}`;
+    } else {
+        baseName = `${dept}_${year}`;
+    }
 
-        data.forEach(file => {
-            let name = file.name.toLowerCase();
+    let promises = [];
 
-            if (dept === "btech") {
-                if (!sem) return;
+    for (let i = 1; i <= 5; i++) {
+        let fileName = `${baseName}_${i}.pdf`;
+        let fullPath = base + fileName;
 
-                if (name === `${dept}_${sem}_${year}.pdf`) {
-                    matches.push(file.download_url);
-                }
-            } else {
-                if (name === `${dept}_${year}.pdf`) {
-                    matches.push(file.download_url);
-                }
+        let p = fetch(fullPath).then(res => {
+            if (res.ok) {
+                return fullPath;
             }
-        });
+            return null;
+        }).catch(() => null);
 
-        results.innerHTML = "";
+        promises.push(p);
+    }
 
-        if (matches.length === 0) {
+    Promise.all(promises).then(values => {
+        const validFiles = values.filter(v => v !== null);
+
+        if (validFiles.length === 0) {
             results.innerHTML = "<p style='color:red;'>No files found</p>";
             return;
         }
 
-        matches.forEach(url => {
+        validFiles.forEach(fullPath => {
+            const fileName = fullPath.split("/").pop();
+
             const link = document.createElement("a");
-            link.href = url;
-            link.textContent = "📄 Open Paper";
+            link.href = fullPath;
+            link.textContent = `📄 ${fileName}`;
             link.target = "_blank";
 
             const download = document.createElement("a");
-            download.href = url;
+            download.href = fullPath;
             download.textContent = "⬇️ Download";
             download.className = "download";
+            download.download = fileName;
 
             results.appendChild(link);
             results.appendChild(download);
         });
-
-    } catch (err) {
-        results.innerHTML = "<p style='color:red;'>Error loading files</p>";
-    }
+    });
 }
-
-</body>
-</html>
