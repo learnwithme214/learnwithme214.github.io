@@ -134,15 +134,19 @@ function searchPapers() {
 
             let filtered = data.filter(item => {
 
-                if (dept === "btech") {
-                    return item.dept === dept &&
-                           item.sem === sem &&
-                           item.year === year;
-                } else {
-                    return item.dept === dept &&
-                           item.year === year;
-                }
-            });
+    const dept = document.getElementById("department").value.toLowerCase();
+    const year = document.getElementById("year").value;
+    const sem = document.getElementById("semester").value.toLowerCase();
+
+    if (dept === "btech") {
+        return item.dept.toLowerCase() === dept &&
+               item.sem.toLowerCase() === sem &&
+               item.year === year;
+    } else {
+        return item.dept.toLowerCase() === dept &&
+               item.year === year;
+    }
+});
 
             if (filtered.length === 0) {
                 results.innerHTML = "<p style='color:red;'>No files found</p>";
