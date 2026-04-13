@@ -177,65 +177,70 @@ function handleDeptChange() {
 }
 
 // Main logic
-function filterPapers() {
+async function filterPapers() {
     const dept = document.getElementById("department").value;
     const year = document.getElementById("year").value;
     const sem = document.getElementById("semester").value;
 
     const results = document.getElementById("results");
-    results.innerHTML = "";
+    results.innerHTML = "Loading...";
 
     if (!dept || !year) {
         results.innerHTML = "<p>Select department and year</p>";
         return;
     }
 
-    const base = "https://learnwithme214.github.io/main.html/papers";
+    try {
+        // 🔗 GitHub API URL
+        const api = "https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/contents/papers";
 
-    let fileName = "";
+        const res = await fetch(api);
+        const data = await res.json();
 
-    // ✅ BTech case
-    if (dept === "btech") {
-        if (!sem) {
-            results.innerHTML = "<p>Select semester</p>";
+        let matches = [];
+
+        data.forEach(file => {
+            let name = file.name.toLowerCase();
+
+            if (dept === "btech") {
+                if (!sem) return;
+
+                if (name === `${dept}_${sem}_${year}.pdf`) {
+                    matches.push(file.download_url);
+                }
+            } else {
+                if (name === `${dept}_${year}.pdf`) {
+                    matches.push(file.download_url);
+                }
+            }
+        });
+
+        results.innerHTML = "";
+
+        if (matches.length === 0) {
+            results.innerHTML = "<p style='color:red;'>No files found</p>";
             return;
         }
-        fileName = `${dept}_${sem}_${year}.pdf`;
-    } 
-    // ✅ Other departments
-    else {
-        fileName = `${dept}_${year}.pdf`;
-    }
 
-    const fullPath = base + fileName;
+        matches.forEach(url => {
+            const link = document.createElement("a");
+            link.href = url;
+            link.textContent = "📄 Open Paper";
+            link.target = "_blank";
 
-    // Check if file exists
-    fetch(fullPath)
-        .then(res => {
-            if (res.ok) {
-                const link = document.createElement("a");
-                link.href = fullPath;
-                link.textContent = `📄 ${fileName}`;
-                link.target = "_blank";
+            const download = document.createElement("a");
+            download.href = url;
+            download.textContent = "⬇️ Download";
+            download.className = "download";
 
-                const download = document.createElement("a");
-                download.href = fullPath;
-                download.textContent = "⬇️ Download";
-                download.className = "download";
-                download.download = fileName;
-
-                results.appendChild(link);
-                results.appendChild(download);
-            } else {
-                results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
-            }
-        })
-        .catch(() => {
-            results.innerHTML = "<p style='color:red;'>No files found</p>";
+            results.appendChild(link);
+            results.appendChild(download);
         });
-}
 
-</script>
+    } catch (err) {
+        results.innerHTML = "<p style='color:red;'>Error loading files</p>";
+    }
+}
 
 </body>
 </html>
