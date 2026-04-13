@@ -3,82 +3,161 @@
 <head>
     <title>Previous Year Papers</title>
 
-   <style>
-    body {
-        font-family: Arial;
-        text-align: center;
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
+            min-height: 100vh;
+        }
 
-        /* ✅ BACKGROUND IMAGE ADDED */
-        background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
-        min-height: 100vh;
-    }
+        /* dark overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.35);
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
 
-    /* optional dark overlay effect */
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.35);
-        z-index: -1;
-    }
+        /* container */
+        .container {
+            width: 95%;
+            max-width: 650px;
+            margin: auto;
+            margin-top: 100px;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            min-height: 70vh;
+        }
 
-    .container {
-        width: 95%;
-        max-width: 650px;
-        min-height: 350px;
-        margin: auto;
-        margin-top: 120px;
-        background: white;
-        padding: 35px;
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    }
+        /* inputs */
+        select, button {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+        }
 
-    select, button {
-    width: 100%;
-    padding: 14px;
-    font-size: 17px;
-    border-radius: 8px;
+        button {
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-    margin-bottom: 18px;  /* ✅ adds clear spacing between elements */
-}
+        /* results */
+        .papers a {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background: #eee;
+            text-decoration: none;
+            color: black;
+            border-radius: 5px;
+        }
 
-/* optional extra breathing space for button */
-button {
-    background: green;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-}
+        .download {
+            font-size: 12px;
+            color: blue;
+        }
 
-    .papers a {
-        display: block;
-        margin-top: 10px;
-        padding: 10px;
-        background: #eee;
-        text-decoration: none;
-        color: black;
-        border-radius: 5px;
-    }
+        /* ===== HAMBURGER MENU ===== */
 
-    .download {
-        font-size: 12px;
-        color: blue;
-    }
-</style>
+        .menu-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 1001;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-icon span {
+            height: 4px;
+            width: 100%;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* animation to X */
+        .menu-icon.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-icon.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-icon.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* side menu */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            padding-top: 60px;
+            transition: left 0.35s ease;
+            z-index: 1000;
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .side-menu a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .side-menu a:hover {
+            background: #00ffcc;
+            color: black;
+        }
+    </style>
 </head>
 
 <body>
 
+<!-- Hamburger -->
+<div class="menu-icon" id="menuIcon" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Side Menu -->
+<div class="side-menu" id="sideMenu">
+    <a href="#">Home</a>
+    <a href="#">Papers</a>
+    <a href="#">About</a>
+</div>
+
+<!-- Main UI -->
 <div class="container">
 
     <h2>📚 Previous Year Papers</h2>
 
-    <!-- Department -->
     <select id="department" onchange="handleDept()">
         <option value="">Select Department</option>
         <option value="english">English</option>
@@ -87,7 +166,6 @@ button {
         <option value="btech">BTech</option>
     </select>
 
-    <!-- Semester -->
     <select id="semester" style="display:none;">
         <option value="">Select Semester</option>
         <option value="sem1">Sem 1</option>
@@ -98,7 +176,6 @@ button {
         <option value="sem6">Sem 6</option>
     </select>
 
-    <!-- Year -->
     <select id="year">
         <option value="">Select Year</option>
         <option value="2026">2026</option>
@@ -117,7 +194,16 @@ button {
 
 <script>
 
-// show/hide semester
+/* menu toggle */
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    const icon = document.getElementById("menuIcon");
+
+    menu.classList.toggle("open");
+    icon.classList.toggle("active");
+}
+
+/* semester toggle */
 function handleDept() {
     const dept = document.getElementById("department").value;
     const sem = document.getElementById("semester");
@@ -130,11 +216,11 @@ function handleDept() {
     }
 }
 
-// main search function
+/* search */
 function searchPapers() {
 
-    const dept = document.getElementById("department").value;
-    const sem = document.getElementById("semester").value;
+    const dept = document.getElementById("department").value.toLowerCase();
+    const sem = document.getElementById("semester").value.toLowerCase();
     const year = document.getElementById("year").value;
     const results = document.getElementById("results");
 
@@ -155,20 +241,15 @@ function searchPapers() {
         .then(data => {
 
             let filtered = data.filter(item => {
-
-    const dept = document.getElementById("department").value.toLowerCase();
-    const year = document.getElementById("year").value;
-    const sem = document.getElementById("semester").value.toLowerCase();
-
-    if (dept === "btech") {
-        return item.dept.toLowerCase() === dept &&
-               item.sem.toLowerCase() === sem &&
-               item.year === year;
-    } else {
-        return item.dept.toLowerCase() === dept &&
-               item.year === year;
-    }
-});
+                if (dept === "btech") {
+                    return item.dept === dept &&
+                           item.sem === sem &&
+                           item.year === year;
+                } else {
+                    return item.dept === dept &&
+                           item.year === year;
+                }
+            });
 
             if (filtered.length === 0) {
                 results.innerHTML = "<p style='color:red;'>No files found</p>";
@@ -193,7 +274,7 @@ function searchPapers() {
             });
 
         })
-        .catch(err => {
+        .catch(() => {
             results.innerHTML = "<p style='color:red;'>Error loading index.json</p>";
         });
 }
