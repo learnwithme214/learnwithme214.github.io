@@ -190,55 +190,47 @@ function filterPapers() {
 
     const base = "https://your-username.github.io/your-repo/papers/";
 
-    let baseName = "";
+    let fileName = "";
 
+    // ✅ BTech case
     if (dept === "btech") {
         if (!sem) {
             results.innerHTML = "<p>Select semester</p>";
             return;
         }
-        baseName = `${dept}_${sem}_${year}`;
-    } else {
-        baseName = `${dept}_${year}`;
+        fileName = `${dept}_${sem}_${year}.pdf`;
+    } 
+    // ✅ Other departments
+    else {
+        fileName = `${dept}_${year}.pdf`;
     }
 
-    let found = false;
+    const fullPath = base + fileName;
 
-    // Try multiple files
-    for (let i = 1; i <= 5; i++) {
-        let fileName = `${baseName}_${i}.pdf`;
-        let fullPath = base + fileName;
+    // Check if file exists
+    fetch(fullPath)
+        .then(res => {
+            if (res.ok) {
+                const link = document.createElement("a");
+                link.href = fullPath;
+                link.textContent = `📄 ${fileName}`;
+                link.target = "_blank";
 
-        fetch(fullPath)
-            .then(res => {
-                if (res.ok) {
-                    found = true;
+                const download = document.createElement("a");
+                download.href = fullPath;
+                download.textContent = "⬇️ Download";
+                download.className = "download";
+                download.download = fileName;
 
-                    // Open link
-                    const link = document.createElement("a");
-                    link.href = fullPath;
-                    link.textContent = `📄 ${fileName}`;
-                    link.target = "_blank";
-
-                    // Download link
-                    const download = document.createElement("a");
-                    download.href = fullPath;
-                    download.textContent = "⬇️ Download";
-                    download.className = "download";
-                    download.download = fileName;
-
-                    results.appendChild(link);
-                    results.appendChild(download);
-                } else if (i === 5 && !found) {
-                    results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
-                }
-            })
-            .catch(() => {
-                if (!found) {
-                    results.innerHTML = "<p style='color:red;'>No files found</p>";
-                }
-            });
-    }
+                results.appendChild(link);
+                results.appendChild(download);
+            } else {
+                results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
+            }
+        })
+        .catch(() => {
+            results.innerHTML = "<p style='color:red;'>No files found</p>";
+        });
 }
 
 </script>
