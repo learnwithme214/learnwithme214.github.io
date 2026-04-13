@@ -87,6 +87,14 @@
             background: #007BFF;
             color: white;
         }
+
+        .download {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: green;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -103,9 +111,22 @@
             <option value="">Select Department</option>
 
             <optgroup label="Arts Faculty">
+                <option value="english">English</option>
                 <option value="history">History</option>
+                <option value="politicalscience">Political Science</option>
+                <option value="anthropology">Anthropology</option>
             </optgroup>
 
+            <optgroup label="Science Faculty">
+                <option value="physics">Physics</option>
+                <option value="mathematics">Mathematics</option>
+                <option value="chemistry">Chemistry</option>
+            </optgroup>
+
+            <optgroup label="Commerce & Management">
+                <option value="commerce">Commerce</option>
+                <option value="mba">MBA</option>
+            </optgroup>
 
             <optgroup label="Engineering">
                 <option value="btech">BTech</option>
@@ -173,37 +194,57 @@ function filterPapers() {
         return;
     }
 
-    let fileName = "";
+    const base = "https://your-username.github.io/your-repo/papers/";
+
+    let baseName = "";
 
     if (dept === "btech") {
         if (!sem) {
             results.innerHTML = "<p>Select semester</p>";
             return;
         }
-        fileName = `${dept}_${sem}_${year}.pdf`;
+        baseName = `${dept}_${sem}_${year}`;
     } else {
-        fileName = `${dept}_${year}.pdf`;
+        baseName = `${dept}_${year}`;
     }
 
-    const base = "https://your-username.github.io/your-repo/papers/";
-    const fullPath = base + fileName;
+    let found = false;
 
-    // Check if file exists
-    fetch(fullPath)
-        .then(res => {
-            if (res.ok) {
-                const link = document.createElement("a");
-                link.href = fullPath;
-                link.textContent = "📄 Open Paper";
-                link.target = "_blank";
-                results.appendChild(link);
-            } else {
-                results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
-            }
-        })
-        .catch(() => {
-            results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
-        });
+    // Try multiple files
+    for (let i = 1; i <= 5; i++) {
+        let fileName = `${baseName}_${i}.pdf`;
+        let fullPath = base + fileName;
+
+        fetch(fullPath)
+            .then(res => {
+                if (res.ok) {
+                    found = true;
+
+                    // Open link
+                    const link = document.createElement("a");
+                    link.href = fullPath;
+                    link.textContent = `📄 ${fileName}`;
+                    link.target = "_blank";
+
+                    // Download link
+                    const download = document.createElement("a");
+                    download.href = fullPath;
+                    download.textContent = "⬇️ Download";
+                    download.className = "download";
+                    download.download = fileName;
+
+                    results.appendChild(link);
+                    results.appendChild(download);
+                } else if (i === 5 && !found) {
+                    results.innerHTML = "<p style='color:red; font-weight:bold;'>No files found</p>";
+                }
+            })
+            .catch(() => {
+                if (!found) {
+                    results.innerHTML = "<p style='color:red;'>No files found</p>";
+                }
+            });
+    }
 }
 
 </script>
