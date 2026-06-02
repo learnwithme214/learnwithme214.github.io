@@ -221,24 +221,38 @@ function searchPapers() {
 let entrancePapers = [];
 
 function showEntrancePage(){
+
     document.getElementById("mainPage").style.display = "none";
     document.getElementById("entrancePage").style.display = "block";
 
+    // Hide button
+    document.getElementById("entranceBtn").style.display = "none";
+
     if(entrancePapers.length === 0){
+
         fetch("papers/entrance.json")
         .then(res => res.json())
         .then(data => {
+
             entrancePapers = data;
-            displayEntrancePapers(data);
+
+            // Show first 5 papers
+            displayEntrancePapers(data.slice(0,5));
+
         });
+
     }
 }
 
 function hideEntrancePage(){
+
     document.getElementById("entrancePage").style.display = "none";
     document.getElementById("mainPage").style.display = "block";
-}
 
+    // Show button again
+    document.getElementById("entranceBtn").style.display = "block";
+}
+    
 function displayEntrancePapers(files){
 
     const results = document.getElementById("entranceResults");
