@@ -7,13 +7,10 @@
     body {
         font-family: Arial;
         text-align: center;
-
-        /* ✅ BACKGROUND IMAGE ADDED */
         background: url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f") no-repeat center center/cover;
         min-height: 100vh;
     }
 
-    /* optional dark overlay effect */
     body::before {
         content: "";
         position: fixed;
@@ -37,25 +34,23 @@
         box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
 
-    select, button {
-    width: 100%;
-    padding: 14px;
-    font-size: 17px;
-    border-radius: 8px;
+    select, button, input {
+        width: 100%;
+        padding: 14px;
+        font-size: 17px;
+        border-radius: 8px;
+        margin-bottom: 18px;
+    }
 
-    margin-bottom: 18px;  /* ✅ adds clear spacing between elements */
-}
+    button {
+        background: green;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
 
-/* optional extra breathing space for button */
-button {
-    background: green;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-    .papers a {
+    .papers a, .paper-link {
         display: block;
         margin-top: 10px;
         padding: 10px;
@@ -69,16 +64,38 @@ button {
         font-size: 12px;
         color: blue;
     }
+
+    .entrance-btn{
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: #007bff;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    #entrancePage{
+        display:none;
+    }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<a href="#"
+   id="entranceBtn"
+   class="entrance-btn"
+   onclick="showEntrancePage()">
+   🎓 Entrance Exam Papers
+</a>
+
+<div class="container" id="mainPage">
 
     <h2>📚 Previous Year Papers</h2>
 
-    <!-- Department -->
     <select id="department" onchange="handleDept()">
         <option value="">Select Department</option>
         <option value="english">English</option>
@@ -87,7 +104,6 @@ button {
         <option value="btech">BTech</option>
     </select>
 
-    <!-- Semester -->
     <select id="semester" style="display:none;">
         <option value="">Select Semester</option>
         <option value="sem1">Sem 1</option>
@@ -98,7 +114,6 @@ button {
         <option value="sem6">Sem 6</option>
     </select>
 
-    <!-- Year -->
     <select id="year">
         <option value="">Select Year</option>
         <option value="2026">2026</option>
@@ -115,9 +130,22 @@ button {
 
 </div>
 
+<div class="container" id="entrancePage">
+
+    <h2>🎓 Entrance Exam Papers</h2>
+
+    <input type="text" id="entranceSearch"
+    placeholder="SEARCH ENTRANCE PAPERS"
+    onkeyup="searchEntrancePapers()">
+
+    <div id="entranceResults"></div>
+
+    <button onclick="hideEntrancePage()">⬅ Back</button>
+
+</div>
+
 <script>
 
-// show/hide semester
 function handleDept() {
     const dept = document.getElementById("department").value;
     const sem = document.getElementById("semester");
@@ -130,7 +158,6 @@ function handleDept() {
     }
 }
 
-// main search function
 function searchPapers() {
 
     const dept = document.getElementById("department").value;
@@ -156,19 +183,15 @@ function searchPapers() {
 
             let filtered = data.filter(item => {
 
-    const dept = document.getElementById("department").value.toLowerCase();
-    const year = document.getElementById("year").value;
-    const sem = document.getElementById("semester").value.toLowerCase();
-
-    if (dept === "btech") {
-        return item.dept.toLowerCase() === dept &&
-               item.sem.toLowerCase() === sem &&
-               item.year === year;
-    } else {
-        return item.dept.toLowerCase() === dept &&
-               item.year === year;
-    }
-});
+                if (dept === "btech") {
+                    return item.dept.toLowerCase() === dept &&
+                           item.sem.toLowerCase() === sem &&
+                           item.year === year;
+                } else {
+                    return item.dept.toLowerCase() === dept &&
+                           item.year === year;
+                }
+            });
 
             if (filtered.length === 0) {
                 results.innerHTML = "<p style='color:red;'>No files found</p>";
@@ -196,6 +219,73 @@ function searchPapers() {
         .catch(err => {
             results.innerHTML = "<p style='color:red;'>Error loading index.json</p>";
         });
+}
+
+let entrancePapers = [];
+
+function showEntrancePage(){
+
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("entrancePage").style.display = "block";
+
+    // Hide button
+    document.getElementById("entranceBtn").style.display = "none";
+
+    if(entrancePapers.length === 0){
+
+        fetch("papers/entrance.json")
+        .then(res => res.json())
+        .then(data => {
+
+            entrancePapers = data;
+
+            // Show first 5 papers
+            displayEntrancePapers(data.slice(0,5));
+
+        });
+
+    }
+}
+
+function hideEntrancePage(){
+
+    document.getElementById("entrancePage").style.display = "none";
+    document.getElementById("mainPage").style.display = "block";
+
+    // Show button again
+    document.getElementById("entranceBtn").style.display = "block";
+}
+    
+function displayEntrancePapers(files){
+
+    const results = document.getElementById("entranceResults");
+    results.innerHTML = "";
+
+    if(files.length === 0){
+        results.innerHTML = "<p>No papers found</p>";
+        return;
+    }
+
+    files.forEach(file=>{
+        let link = document.createElement("a");
+        link.href = "papers/" + file.file;
+        link.target = "_blank";
+        link.className = "paper-link";
+        link.textContent = "📄 " + file.name;
+        results.appendChild(link);
+    });
+}
+
+function searchEntrancePapers(){
+
+    const keyword = document.getElementById("entranceSearch")
+    .value.toLowerCase();
+
+    const filtered = entrancePapers.filter(item =>
+        item.name.toLowerCase().includes(keyword)
+    );
+
+    displayEntrancePapers(filtered);
 }
 
 </script>
