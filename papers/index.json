@@ -14,4 +14,34 @@
     "dept": "history",
     "year": "2022"
   }
+  {
+    "dept": "btech",
+    "sem": "sem2",
+    "year": "2026",
+    "file": "Biology_2026.pdf"
+  },
+  {
+    "dept": "btech",
+    "sem": "sem2",
+    "year": "2026",
+    "file": "Chemistry_2026.pdf"
+  },
+  {
+    "dept": "btech",
+    "sem": "sem2",
+    "year": "2026",
+    "file": "English_2026.pdf"
+  },
+  {
+    "dept": "btech",
+    "sem": "sem2",
+    "year": "2026",
+    "file": "IT_2026.pdf"
+  },
+  {
+    "dept": "btech",
+    "sem": "sem2",
+    "year": "2026",
+    "file": "Maths_2026.pdf"
+  }
 ]
