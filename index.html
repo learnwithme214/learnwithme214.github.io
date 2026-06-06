@@ -74,8 +74,8 @@ function searchPapers() {
         return;
     }
 
-    // Using absolute paths starting with /
-    fetch("/papers/index.json")
+    // Changed path to root directory
+    fetch("index.json")
         .then(res => res.json())
         .then(data => {
             let filtered = data.filter(item => {
@@ -91,7 +91,7 @@ function searchPapers() {
 
             filtered.forEach(file => {
                 let link = document.createElement("a");
-                link.href = "/papers/" + file.file;
+                link.href = "papers/" + file.file;
                 link.target = "_blank";
                 link.textContent = "📄 " + file.file;
                 results.appendChild(link);
@@ -107,8 +107,8 @@ function showEntrancePage(){
     document.getElementById("entrancePage").style.display = "block";
     document.getElementById("entranceBtn").style.display = "none";
 
-    // Using absolute path
-    fetch("/papers/entrance.json")
+    // Changed path to root directory
+    fetch("entrance.json")
         .then(res => res.json())
         .then(data => {
             displayEntrancePapers(data.slice(0,5));
@@ -126,7 +126,7 @@ function displayEntrancePapers(files){
     results.innerHTML = "";
     files.forEach(file => {
         let link = document.createElement("a");
-        link.href = "/papers/" + file.file;
+        link.href = "papers/" + file.file;
         link.target = "_blank";
         link.className = "paper-link";
         link.textContent = "📄 " + file.name;
