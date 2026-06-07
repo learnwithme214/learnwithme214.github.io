@@ -96,7 +96,8 @@
 </div>
 
 <script>
-function searchPapers(){
+function searchPapers() {
+
     const dept = document.getElementById("department").value;
     const sem = document.getElementById("semester").value;
     const year = document.getElementById("year").value;
@@ -104,37 +105,47 @@ function searchPapers(){
 
     results.innerHTML = "";
 
-    if(!dept || !sem || !year){
-        results.innerHTML = "<p>Please select department, semester and year.</p>";
+    if (!dept || !sem || !year) {
+        results.innerHTML =
+            "<p>Please select department, semester and year.</p>";
         return;
     }
 
-    fetch("papers/index.json")
-    .then(res => res.json())
+    fetch("papers.json")
+    .then(response => response.json())
     .then(data => {
-        const filtered = data.filter(item =>
-            item.dept.toLowerCase() === dept &&
-            item.sem.toLowerCase() === sem &&
-            item.year == year
+
+        const match = data.entries.find(item =>
+            item.dept === dept &&
+            item.sem === sem &&
+            item.year === year
         );
 
-        if(filtered.length === 0){
-            results.innerHTML = "<p style='color:red'>No papers found.</p>";
+        if (!match) {
+            results.innerHTML =
+                "<p style='color:red'>No papers found.</p>";
             return;
         }
 
-        filtered.forEach(file => {
+        match.files.forEach(file => {
+
             results.innerHTML += `
-            <a href="papers/${file.file}" target="_blank">
-                📄 ${file.file}
-            </a>`;
+                <a href="papers/${file}" target="_blank">
+                    📄 ${file}
+                </a>
+            `;
+
         });
+
     })
-    .catch(() => {
-        results.innerHTML = "<p style='color:red'>Error loading papers.</p>";
+    .catch(error => {
+
+        console.error(error);
+
+        results.innerHTML =
+            "<p style='color:red'>Error loading papers.</p>";
+
     });
+
 }
 </script>
-
-</body>
-</html>
