@@ -1,0 +1,22 @@
+<!-- Updated exp1.html -->
+<!-- Change made: Entrance page now shows first 5 papers automatically -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>exp1 Updated</title>
+</head>
+<body>
+<h2>Update for exp1.html</h2>
+<p>Replace the fetch block in showEntrancePage() with:</p>
+<pre>
+fetch("papers/entrance.json")
+.then(res => res.json())
+.then(data => {
+    entrancePapers = data;
+    displayEntrancePapers(data.slice(0, 5));
+});
+</pre>
+<p>This displays the first 5 available PDFs before searching.</p>
+</body>
+</html>
