@@ -1,13 +1,16 @@
 {
-  "btech": {
-    "sem2": {
-      "2026": [
+  "entries": [
+    {
+      "dept": "btech",
+      "sem": "sem2",
+      "year": "2026",
+      "files": [
         "Maths_2026.pdf",
         "Biology_2026.pdf",
-        "IT_2026.pdf",
+        "Chemistry_2026.pdf",
         "English_2026.pdf",
-        "Chemistry_2026.pdf"
+        "IT_2026.pdf"
       ]
     }
-  }
+  ]
 }
